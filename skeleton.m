@@ -20,28 +20,18 @@ disp('Feature Extraction Stage in progress...')
 % Creating empy array of features
 features = zeros(length(Xtrain),5);
 
-%% Mostrar una imagen
-% figure
-% subplot(1,2,1), imshow(X{24},[])
-% title(['24 H=[0.922913631583241]'])
-% subplot(1,2,2), imshow(X{31},[])
-% title(['31 H=[0.171397054803504]'])
-
-
 %% Visual Feature Extraction
 disp('Extracting visual features...')
 for i = 1:length(Xtrain)
-% for i = 1:1
     
     % Select current image
-    I =  X{i};
+    I = Xtrain{i} ;
     
     %%% Feature 1: Dominant Colours
     % Convert I to HSV image
     HSV = rgb2hsv(I) ;
     % Select Hue component
     H = HSV(:,:,1) ;
-    
     % Obtain the variability in colour (entropy)
     colour_entropy = entropy(H) ;
     % Save feature
@@ -51,25 +41,26 @@ for i = 1:length(Xtrain)
     % Extract the Value channel from HSV image
     V = HSV(:,:,3) ;
     % Obtain the mean value of the Value channel
-    brightness = mean(V,'all') ;
+    brightness = mean(V(:)) ;
     % Save feature
     features(i,2) = brightness ;
-    
     
     %%% Feature 3: Edges
     % Convert I to gray-scale image
     Ig = rgb2gray(I) ;
+%     imshow(Ig)
+%     pause(2);
     % Obtain edge image using the Sobel filter
-    BW = edge(Ig, 'Sobel') ;
-
+    BW = edge(Ig,'Sobel') ;
+%     imshow(BW)
+%     pause(2);
     % Get the amount of edges in the BW image
-    edge_quantity = sum(BW,'all') ;
+    edge_quantity = sum(BW(:)) ;
     % Save feature
     features(i,3) = edge_quantity ;    
   
 end
-disp('---Visual features extracted---')
-% 
+
 % %% Textual Feature Extraction
 % disp('Extracting textual features...')
 % for i = 1:length(Xtrain)
