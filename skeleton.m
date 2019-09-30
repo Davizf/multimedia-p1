@@ -48,12 +48,8 @@ for i = 1:length(Xtrain)
     %%% Feature 3: Edges
     % Convert I to gray-scale image
     Ig = rgb2gray(I) ;
-%     imshow(Ig)
-%     pause(2);
     % Obtain edge image using the Sobel filter
     BW = edge(Ig,'Sobel') ;
-%     imshow(BW)
-%     pause(2);
     % Get the amount of edges in the BW image
     edge_quantity = sum(BW(:)) ;
     % Save feature
@@ -61,32 +57,50 @@ for i = 1:length(Xtrain)
   
 end
 
-% %% Textual Feature Extraction
-% disp('Extracting textual features...')
-% for i = 1:length(Xtrain)
-%     
-%     % Select current text
-%     T = .. ;
-%     % Tokenize document (separate into words)
-%     words = obtain_word_array(T);
-%     
-%     %%% Feature 4: Number of words
-%     % Obtain the number of words (tokens)
-%     num_words = .. ;
-%     % Save feature
-%     features(i,4) = num_words ;  
-%     
-%     %%% Feature 5: Length of words
-%     % Obtain the length of each word in the description
-%     word_lengths = .. ;
-%     % Obtain the mean length of the words in the description
-%     mean_word_length = .. ;
-%     % Save feature
-%     features(i,5) = mean_word_length; 
-% 
-% end
-% disp('Feature Extraction complete!')
-% 
+
+%% Textual Feature Extraction
+disp('Extracting textual features...')
+
+arrayText = Xtrain(:,2) ;
+
+for i = 1:length(Xtrain)
+
+    % Select current text
+    T = arrayText(i) ;
+    
+    str = ["an example of a short sentence" "a second short sentence"];
+    documents = tokenizedDocument(str);
+    
+    % Tokenize document (separate into words)
+    words = obtain_word_array(T);
+    
+    %%% Feature 4: Number of words
+    % Obtain the number of words (tokens)
+    num_words = length(words) ;
+    % Save feature
+    features(i,4) = num_words ;  
+    
+    %%% Feature 5: Length of words
+    % Obtain the length of each word in the description
+    word_lengths = 0 ;
+    for j = 1:length(words)
+        word_lengths = word_lengths + strlength(words(j));
+    end
+    
+    % Obtain the mean length of the words in the description
+    mean_word_length = word_lengths/length(words) ;
+    % Save feature
+    features(i,5) = mean_word_length; 
+    
+    %%%%%%%%%%%%%%%%%%
+    %       P9       %
+    %%%%%%%%%%%%%%%%%%
+    bag = bagOfWords(lower(words));
+    topkwords(bag, 10)
+
+end
+disp('Feature Extraction complete!')
+
 % %% Normalization Stage
 % disp('Normalization Stage in progress...')
 % % Obtain the mean of each feature
