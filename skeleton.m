@@ -95,49 +95,57 @@ for i = 1:length(Xtrain)
     %%%%%%%%%%%%%%%%%%
     %       P9       %
     %%%%%%%%%%%%%%%%%%
-    bag = bagOfWords(lower(words));
-    topkwords(bag, 10)
+%     bag = bagOfWords(lower(words));
+%     topkwords(bag, 10)
 
 end
 disp('Feature Extraction complete!')
 
-% %% Normalization Stage
-% disp('Normalization Stage in progress...')
-% % Obtain the mean of each feature
-% feat_mean = .. ;
-% % Obtain the standard deviation of each feature
-% feat_std  = .. ;
-% % Normalize the extracted features
-% features_n = .. ;
-% 
-% % Check if normalization was correctly implemented (VERY IMPORTANT)
-% % If normalization was correctly implemented, running the line below should
-% % print the message saying so.
-% check_normalization(features_n);
-% 
-% %% Feature Visualization
-% % Select pair of features to visualize:
-% %   -1: Colour
-% %   -2: Brightness
-% %   -3: Edges
-% %   -4: Word number
-% %   -5: Word length
-% feat_a = .. ;
-% feat_b = .. ;
-% % Plot feature values in scatter diagram
-% figure()
-% visualize_features(features_n, Ytrain, feat_a, feat_b)
-% 
-% %% Training Stage
-% disp('Training Stage in progress...')
-% % Train model with all features available
-% model = fit_gaussian(features_n,Ytrain);
-% % Train model with just visual  features
-% visual_model = fit_gaussian(features_n(:,[1 2 3]),Ytrain);
-% % Train model with just textual features
-% textual_model = fit_gaussian(features_n(:,[4 5]),Ytrain);
-% disp('Training completed!')
-% 
+%% Normalization Stage
+disp('Normalization Stage in progress...')
+% Obtain the mean of each feature
+feat_mean = mean(features) ;
+% Obtain the standard deviation of each feature
+feat_std  = std(features) ;
+% Normalize the extracted features
+size = size(features);
+features_n = zeros(960,5);
+
+for i = 1:size(2)
+    for j = 1:size(1)
+        features_n(j,i) = (features(j,i) - feat_mean(i)) / feat_std(i);
+    end
+end
+
+
+% Check if normalization was correctly implemented (VERY IMPORTANT)
+% If normalization was correctly implemented, running the line below should
+% print the message saying so.
+check_normalization(features_n);
+
+%% Feature Visualization
+% Select pair of features to visualize:
+%   -1: Colour
+%   -2: Brightness
+%   -3: Edges
+%   -4: Word number
+%   -5: Word length
+feat_a = 2 ;
+feat_b = 3 ;
+% Plot feature values in scatter diagram
+figure()
+visualize_features(features_n, Ytrain, feat_a, feat_b)
+
+%% Training Stage
+disp('Training Stage in progress...')
+% Train model with all features available
+model = fit_gaussian(features_n,Ytrain);
+% Train model with just visual  features
+visual_model = fit_gaussian(features_n(:,[1 2 3]),Ytrain);
+% Train model with just textual features
+textual_model = fit_gaussian(features_n(:,[4 5]),Ytrain);
+disp('Training completed!')
+
 % %% Test Stage
 % disp('Testing Stage in progress...')
 % % IMPORTANT!!!
