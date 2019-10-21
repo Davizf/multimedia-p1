@@ -67,10 +67,7 @@ for i = 1:length(Xtrain)
 
     % Select current text
     T = arrayText(i) ;
-    
-    str = ["an example of a short sentence" "a second short sentence"];
-    documents = tokenizedDocument(str);
-    
+ 
     % Tokenize document (separate into words)
     words = obtain_word_array(T);
     
@@ -130,11 +127,11 @@ check_normalization(features_n);
 %   -3: Edges
 %   -4: Word number
 %   -5: Word length
-feat_a = 2 ;
-feat_b = 3 ;
+feat_a = 1 ;
+feat_b = 2 ;
 % Plot feature values in scatter diagram
-figure()
-visualize_features(features_n, Ytrain, feat_a, feat_b)
+% figure()
+% visualize_features(features_n, Ytrain, feat_a, feat_b)
 
 %% Training Stage
 disp('Training Stage in progress...')
@@ -146,31 +143,98 @@ visual_model = fit_gaussian(features_n(:,[1 2 3]),Ytrain);
 textual_model = fit_gaussian(features_n(:,[4 5]),Ytrain);
 disp('Training completed!')
 
-% %% Test Stage
-% disp('Testing Stage in progress...')
-% % IMPORTANT!!!
-% % Test images need to undergo the exact same process as training images
-% % Note that you can extract both types of features within the same loop
-% features_test = zeros(length(Xtest),5);
-% 
-% %% Test sample processing
-% for i = 1:length(Xtest)
-%  
-%     
-%     features_test(i,1) = .. ;
-%     features_test(i,2) = .. ;
-%     features_test(i,3) = .. ;
-%     features_test(i,4) = .. ;  
-%     features_test(i,5) = .. ; 
-%     
-% end
-% 
-% %% Test sample normalization
-% %%% Perform Normalization
-% % Note that you do not need to recompute the mean and standard deviation
-% % again. You need to use the values from training
-% features_test_n = .. ;
-% 
+%% Test Stage
+disp('Testing Stage in progress...')
+% IMPORTANT!!!
+% Test images need to undergo the exact same process as training images
+% Note that you can extract both types of features within the same loop
+features_test = zeros(length(Xtest),5);
+
+%% Test sample processing
+for i = 1:length(Xtest)
+    
+    % Select current image
+    I = Xtest{i} ;
+    
+    %%% Feature 1: Dominant Colours
+    % Convert I to HSV image
+    HSV = rgb2hsv(I) ;
+    % Select Hue component
+    H = HSV(:,:,1) ;
+    % Obtain the variability in colour (entropy)
+    colour_entropy = entropy(H) ;
+    % Save feature
+    features_test(i,1) = colour_entropy ;
+    
+    %%% Feature 2: Brightness
+    % Extract the Value channel from HSV image
+    V = HSV(:,:,3) ;
+    % Obtain the mean value of the Value channel
+    brightness = mean(V(:)) ;   
+    % Save feature
+    features_test(i,2) = brightness ;
+    
+    %%% Feature 3: Edges
+    % Convert I to gray-scale image
+    Ig = rgb2gray(I) ;
+    % Obtain edge image using the Sobel filter
+    BW = edge(Ig,'Sobel') ;
+    % Get the amount of edges in the BW image
+    edge_quantity = sum(BW(:)) ;
+    % Save feature
+    features_test(i,3) = edge_quantity ;   
+    
+end
+
+arrayText = Xtest(:,2) ;
+
+for i = 1:length(Xtest)
+
+    % Select current text
+    T = arrayText(i) ;
+    
+    % Tokenize document (separate into words)
+    words = obtain_word_array(T);
+    
+    %%% Feature 4: Number of words
+    % Obtain the number of words (tokens)
+    num_words = length(words) ;
+    % Save feature
+    features_test(i,4) = num_words ;  
+    
+    %%% Feature 5: Length of words
+    % Obtain the length of each word in the description
+    word_lengths = 0 ;
+    for j = 1:length(words)
+        word_lengths = word_lengths + strlength(words(j));
+    end
+    
+    % Obtain the mean length of the words in the description
+    mean_word_length = word_lengths/length(words) ;
+    % Save feature
+    features_test(i,5) = mean_word_length; 
+
+end
+
+
+
+%% Test sample normalization
+%%% Perform Normalization
+% Note that you do not need to recompute the mean and standard deviation
+% again. You need to use the values from training
+
+clear size
+
+size = size(features_test);
+features_test_n = zeros(640,5);
+
+for i = 1:size(2)
+    for j = 1:size(1)
+        features_test_n(j,i) = (features_test(j,i) - feat_mean(i)) / feat_std(i);
+    end
+end
+
+
 % %% Test the models against the new extracted features
 % % Test visual  model
 % [labels_pred_v, scores_pred_v] = predict_gaussian(visual_model, ...
