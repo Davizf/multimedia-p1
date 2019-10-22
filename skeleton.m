@@ -234,44 +234,44 @@ for i = 1:size(2)
     end
 end
 
+%% Test the models against the new extracted features
+% Test visual  model
+[labels_pred_v, scores_pred_v] = predict_gaussian(visual_model, ...
+                                                  features_test_n(:,[1 2 3]));
+% Test textual model
+[labels_pred_t, scores_pred_t] = predict_gaussian(textual_model, ...
+                                                  features_test_n(:,[4 5]));
+% Test global  model
+[labels_pred, scores_pred]     = predict_gaussian(model, ...
+                                                  features_test_n);
 
-% %% Test the models against the new extracted features
-% % Test visual  model
-% [labels_pred_v, scores_pred_v] = predict_gaussian(visual_model, ...
-%                                                   features_test_n(:,[1 2 3]));
-% % Test textual model
-% [labels_pred_t, scores_pred_t] = predict_gaussian(textual_model, ...
-%                                                   features_test_n(:,[4 5]));
-% % Test global  model
-% [labels_pred, scores_pred]     = predict_gaussian(model, ...
-%                                                   features_test_n);
-% 
-% %% Performance Assessment Stage
-% disp('Performance Assessment Stage in progress...')
-% labels_true = Ytest';
-% % Measure the performance of the developed system (Detection & False Alarm)
+%% Performance Assessment Stage
+disp('Performance Assessment Stage in progress...')
+labels_true = Ytest;
+% Measure the performance of the developed system (Detection & False Alarm)
+% Recorrer la matriz labels_true y comparar que coincidan con labels_pred TODO
 % P_D  = .. ;
 % P_FA = .. ;
-% 
-% % Measure the performance of the developed system (AUC)
-% % (NO NEED TO CODE ANYTHING HERE)
-% [X1,Y1,T1,AUC1] = perfcurve(Ytest',scores_pred_v,1);
-% [X2,Y2,T2,AUC2] = perfcurve(Ytest',scores_pred_t,1);
-% [X3,Y3,T3,AUC3] = perfcurve(Ytest',scores_pred,1);
-% figure(2),area(X3,Y3,'FaceColor','Green','FaceAlpha',0.5)
-% hold on
-% figure(2),area(X3,X3,'FaceColor','White','FaceAlpha',0.7)
-% figure(2), plot(X3,Y3,'k','LineWidth',5)
-% figure(2), plot(X3,X3,'k--','LineWidth',5)
-% figure(2),area(X1,Y1,'FaceColor','Blue','FaceAlpha',0.5)
-% figure(2),area(X1,X1,'FaceColor','White','FaceAlpha',0.7)
-% figure(2), plot(X1,Y1,'k','LineWidth',5)
-% figure(2), plot(X1,X1,'k--','LineWidth',5)
-% figure(2),area(X2,Y2,'FaceColor','Red','FaceAlpha',0.5)
-% figure(2),area(X2,X2,'FaceColor','White','FaceAlpha',0.7)
-% figure(2), plot(X2,Y2,'k','LineWidth',5)
-% figure(2), plot(X2,X2,'k--','LineWidth',5)
-% title(['AUC (I) = ' num2str(AUC1) ' - AUC (T) = ' num2str(AUC2) ' - AUC (I+T) = ' num2str(AUC3)])
-% disp('Performance Assessed!')
-% 
-% save('data/features.mat','features','features_test','features_n','features_test_n');
+
+% Measure the performance of the developed system (AUC)
+% (NO NEED TO CODE ANYTHING HERE)
+[X1,Y1,T1,AUC1] = perfcurve(Ytest',scores_pred_v,1);
+[X2,Y2,T2,AUC2] = perfcurve(Ytest',scores_pred_t,1);
+[X3,Y3,T3,AUC3] = perfcurve(Ytest',scores_pred,1);
+figure(2),area(X3,Y3,'FaceColor','Green','FaceAlpha',0.5)
+hold on
+figure(2),area(X3,X3,'FaceColor','White','FaceAlpha',0.7)
+figure(2), plot(X3,Y3,'k','LineWidth',5)
+figure(2), plot(X3,X3,'k--','LineWidth',5)
+figure(2),area(X1,Y1,'FaceColor','Blue','FaceAlpha',0.5)
+figure(2),area(X1,X1,'FaceColor','White','FaceAlpha',0.7)
+figure(2), plot(X1,Y1,'k','LineWidth',5)
+figure(2), plot(X1,X1,'k--','LineWidth',5)
+figure(2),area(X2,Y2,'FaceColor','Red','FaceAlpha',0.5)
+figure(2),area(X2,X2,'FaceColor','White','FaceAlpha',0.7)
+figure(2), plot(X2,Y2,'k','LineWidth',5)
+figure(2), plot(X2,X2,'k--','LineWidth',5)
+title(['AUC (I) = ' num2str(AUC1) ' - AUC (T) = ' num2str(AUC2) ' - AUC (I+T) = ' num2str(AUC3)])
+disp('Performance Assessed!')
+
+save('data/features.mat','features','features_test','features_n','features_test_n');
