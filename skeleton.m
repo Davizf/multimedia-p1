@@ -249,9 +249,30 @@ end
 disp('Performance Assessment Stage in progress...')
 labels_true = Ytest;
 % Measure the performance of the developed system (Detection & False Alarm)
-% Recorrer la matriz labels_true y comparar que coincidan con labels_pred TODO
-% P_D  = .. ;
-% P_FA = .. ;
+posit_correct = 0;
+posit_sample = 0;
+false_posit = 0;
+false_sample = 0;
+
+for i = 1:length(labels_pred)
+    if (labels_pred(i) == labels_true(i))
+        posit_correct = posit_correct + 1;
+    end
+    if (labels_pred(i) == 1)
+        posit_sample = posit_sample + 1;
+    end
+    if (labels_pred(i) == -1 && labels_true(i) == 1)
+        false_posit = false_posit + 1;
+    end
+    if (labels_pred(i) == -1)
+        false_sample = false_sample + 1;
+    end
+end
+
+P_D  = posit_correct / posit_sample;
+P_FA = false_posit / false_sample;
+fprintf('Probabilidad de deteccion (P_D) = %f\n', P_D)
+fprintf('Probabilidad de falsa alarma (P_FA) = %f\n', P_FA)
 
 % Measure the performance of the developed system (AUC)
 % (NO NEED TO CODE ANYTHING HERE)
